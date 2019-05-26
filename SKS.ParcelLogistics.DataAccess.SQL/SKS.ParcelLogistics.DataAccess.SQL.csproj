@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.Entities\SKS.ParcelLogistics.DataAccess.Entities.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.Interfaces\SKS.ParcelLogistics.DataAccess.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

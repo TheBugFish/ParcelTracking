@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.2.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="7.3.0-beta2" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SKS.ParcelLogistics.BusinessLogic.Interfaces\SKS.ParcelLogistics.BusinessLogic.Interfaces.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.BusinessLogic\SKS.ParcelLogistics.BusinessLogic.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.Mock\SKS.ParcelLogistics.DataAccess.Mock.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.SQL\SKS.ParcelLogistics.DataAccess.SQL.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DTOs\SKS.ParcelLogistics.WebService.DTOs.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.Interfaces\SKS.ParcelLogistics.WebService.Interfaces.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.ServiceAgents.Interfaces\SKS.ParcelLogistics.ServiceAgents.Interfaces.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.ServiceAgents\SKS.ParcelLogistics.ServiceAgents.csproj" />
+  </ItemGroup>
+
+</Project>

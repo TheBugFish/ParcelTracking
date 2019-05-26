@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SKS.ParcelLogistics.BusinessLogic.Interfaces\SKS.ParcelLogistics.BusinessLogic.Interfaces.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.Entities\SKS.ParcelLogistics.DataAccess.Entities.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.Interfaces\SKS.ParcelLogistics.DataAccess.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

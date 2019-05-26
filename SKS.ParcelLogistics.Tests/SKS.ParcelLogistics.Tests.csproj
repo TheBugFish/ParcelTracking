@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
+    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SKS.ParcelLogistics.BusinessLogic.Entities\SKS.ParcelLogistics.BusinessLogic.Entities.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.BusinessLogic.Mock\SKS.ParcelLogistics.BusinessLogic.Mock.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.BusinessLogic\SKS.ParcelLogistics.BusinessLogic.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DataAccess.Mock\SKS.ParcelLogistics.DataAccess.Mock.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.DTOs\SKS.ParcelLogistics.WebService.DTOs.csproj" />
+    <ProjectReference Include="..\SKS.ParcelLogistics.WebService\SKS.ParcelLogistics.WebService.csproj" />
+  </ItemGroup>
+</Project>

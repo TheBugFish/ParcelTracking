@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .clear {
+            clear: both;
+        }
+
+        div.inputcontainer {
+            height: 100%;
+        }
+
+        div.userinput {
+            float: left;
+            height: 420px;
+            border: dotted 1px;
+            width: 200px;
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        div#resultJson {
+            border: double 1px solid #222222;
+        }
+
+        div#debug {
+            background-color: antiquewhite;
+            display: inline-block;
+        }
+
+        div.error {
+            display: inline-block;
+            background-color: #FF2222;
+            padding: 5px;
+            margin: 2px;
+        }
+
+        div.success {
+            display: inline-block;
+            background-color: #22FF22;
+            padding: 5px;
+            margin: 2px;
+        }
+
+        div.border{
+            border: 1px solid black;
+            margin-top: 1px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        function ajaxRestGet(url) {
+            ajaxRestCall(url, "GET", "");
+        }
+
+        function ajaxRestPost(url, header) {
+            ajaxRestCall(url, "POST", header);
+        }
+
+        function ajaxRestCall(url, method, header) {
+            restUrl = url;
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    clearPreviousResults();
+
+                    
+                    //console.log(this.responseText);
+                    var fromJSON;
+                    fromJSON = JSON.parse(this.responseText);
+
+
+                    switch (this.status) {
+                        case 200:
+                            document.getElementById("resultContainer").appendChild(drawResultElements(fromJSON));
+                            //document.getElementById("resultContainer").innerHTML += "OK: " + this.responseText;
+                            break;
+                        default:
+                            document.getElementById("resultContainer").appendChild(createErrorElement(fromJSON, xhttp.status));
+                            break;
+                    }
+                }
+            };
+
+            xhttp.open(method, restUrl, true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send(header);
+
+        }
+
+        function clearPreviousResults() {
+            document.getElementById("resultContainer").innerHTML = "";
+
+        }
+
+        function trackParcel() {
+            var parcelCode = document.getElementById("parcelCode").value;
+            var restUrl = "/api/parcel/" + parcelCode;
+
+            ajaxRestGet(restUrl);
+        }
+
+        function reportHop() {
+            var parcelCode = document.getElementById("hopParcelCode").value;
+            var locationCode = document.getElementById("hopLocationCode").value;
+            var restUrl = "/api/parcel/" + parcelCode + "/reportHop/" + locationCode;
+
+            ajaxRestPost(restUrl);
+        }
+
+        function onboardParcel() {
+            var parcelWeight = Number(document.getElementById("weight").value);
+
+            var firstName = document.getElementById("firstName").value;
+            var lastName = document.getElementById("lastName").value;
+            var street = document.getElementById("street").value;
+            var postalCode = document.getElementById("postalCode").value;
+            var city = document.getElementById("city").value;
+
+            var parcel = (JSON.stringify({ "weight": parcelWeight, "receipient": { "firstname": firstName, "lastname": lastName, "street": street, "postalcode": postalCode, "city": city } }));
+
+            ajaxRestPost("/api/parcel/", parcel);
+        }
+
+        function loadSampleParcelData() {
+
+            document.getElementById("weight").value = 0.5;
+
+            document.getElementById("firstName").value = "Max";
+            document.getElementById("lastName").value = "Muster";
+            document.getElementById("street").value = "Mariahilferstraße 1";
+            document.getElementById("postalCode").value = "A-1060";
+            document.getElementById("city").value = "Wien";
+        }
+
+        function generateSampleWarehouseTree() {
+            var warehouse = ('{"code":"ROOT","description":"This is the root WH","duration":0.1,"nextHops":[{"code":"REG1","description":"This is a regional WH","duration":0.1,"nextHops":[{"code":"LOC1","description":"This is a local WH","duration":0.1,"nextHops":[],"trucks":[{"code":"TRK1","numberPlate":"VAIA 1","latitude":48.2166204,"longitude":16.3958888,"radius":200.0,"duration":0.1},{"code":"TRK2","numberPlate":"VAIA 2","latitude":0.0,"longitude":0.0,"radius":200.0,"duration":0.1}]},{"code":"LOC2","description":"This is a local WH","duration":0.3,"nextHops":[],"trucks":[]}],"trucks":[]},{"code":"REG2","description":"This is another regional WH","duration":0.1,"nextHops":[],"trucks":[]}],"trucks":[]}');
+
+            ajaxRestPost("/api/warehouse/", warehouse);
+        }
+
+        function createErrorElement(obj, status) {
+            var div = document.createElement("div");
+            div.setAttribute("class", "error");
+
+            var b = document.createElement("b");
+            var innerDiv = document.createElement("div");
+
+            div.appendChild(b);
+            div.appendChild(innerDiv);
+
+            innerDiv.innerHTML = obj.errorMessage;
+            b.innerHTML = status;
+            return div;
+        }
+
+        function createSuccessElement(obj) {
+            var div = document.createElement("div");
+            div.setAttribute("class", "success");
+
+            var b = document.createElement("b");
+            var innerDiv = document.createElement("div");
+
+            div.appendChild(b);
+            div.appendChild(innerDiv);
+
+            innerDiv.innerHTML = obj.trackingId; //well, that's how the parameter is called...
+            b.innerHTML = "Server responded:";
+            return div;
+        }
+
+        function appendChildDiv(parent, content) {
+            var result = document.createElement("div");
+            result.innerHTML = content;
+
+            parent.appendChild(result);
+        }
+
+        function drawResultElements(fromJSON) {
+            if (fromJSON.state != undefined) {
+                return createParcelTrackingInfoElement(fromJSON);
+            } else {
+                return createSuccessElement(fromJSON);
+            }
+        }
+
+        function createParcelTrackingInfoElement(info) {
+            //alert(JSON.stringify(info));
+            var parentDiv = document.createElement("div");
+            parentDiv.setAttribute("class", "success");
+
+            var trackingHeaderDiv = document.createElement("div");
+            var statusHeaderDiv = document.createElement("div");
+
+            var historyParentDiv = document.createElement("div");
+            historyParentDiv.setAttribute("class", "border");
+            var historyHeaderDiv = document.createElement("div");
+
+            var futureParentDiv = document.createElement("div");
+            futureParentDiv.setAttribute("class", "border");
+            var futureHeaderDiv = document.createElement("div");
+
+            trackingHeaderDiv.innerHTML = "Tracking Parcel ID '" + document.getElementById("parcelCode").value + "'";
+            statusHeaderDiv.innerHTML = "Status: " + info.state;
+
+            historyHeaderDiv.innerHTML = "<b>Tracking history</b>";
+            futureHeaderDiv.innerHTML = "<b>Future route</b>";
+
+
+            parentDiv.appendChild(trackingHeaderDiv);
+            parentDiv.appendChild(statusHeaderDiv);
+            parentDiv.appendChild(historyParentDiv);
+            parentDiv.appendChild(futureParentDiv);
+
+            historyParentDiv.appendChild(historyHeaderDiv);
+            futureParentDiv.appendChild(futureHeaderDiv);
+
+
+            var visitedHops = info.visitedHops;
+            var futureHops = info.futureHops;
+
+            if (!visitedHops || visitedHops.length == 0) {
+                appendChildDiv(historyParentDiv, "Oh no! Your parcel didn't have any stops yet...");
+            } else {
+                for (var i = 0; i < visitedHops.length; i++) {
+                    var scanDate = new Date(visitedHops[i].dateTime);
+                    appendChildDiv(historyParentDiv, scanDate.getFullYear() + "-" + ("0" + scanDate.getMonth()).slice(-2) + "-" + ("0" + scanDate.getDate()).slice(-2) + " T " + ("0" + scanDate.getHours()).slice(-2) + ":" + ("0" + scanDate.getMinutes()).slice(-2) + ":" + ("0" + scanDate.getSeconds()).slice(-2) + " | " + "Was scanned at '" + visitedHops[i].code + "'.");
+                }
+            }
+
+            if (!futureHops || futureHops.length == 0) {
+                appendChildDiv(futureParentDiv, "Your parcel should be at your doorstep soon!");
+            } else {
+                for (var i = 0; i < futureHops.length; i++) {
+                    appendChildDiv(futureParentDiv, "#" + (i + 1) + ": " + futureHops[i].code);
+                }
+            }
+            return parentDiv;
+        }
+
+    </script>
+</head>
+<body>
+
+    <div class="inputcontainer">
+        <div class="userinput">
+            Parcel Tracking Code:
+            <br />
+            <input type="text" id="parcelCode" />
+            <br />
+            <br />
+            <button type="button" onclick="trackParcel()">Track your parcel!</button>
+        </div>
+
+        <div class="userinput">
+            Parcel Tracking Code:
+            <br />
+            <input type="text" id="hopParcelCode" />
+            <br />
+            Hop Location Code:
+            <br />
+            <input type="text" id="hopLocationCode" />
+            <br />
+            <br />
+            <button type="button" onclick="reportHop()">Report a hop!</button>
+        </div>
+
+        <div class="userinput">
+            Weight:
+            <br />
+            <input type="text" id="weight" />
+            <br />
+            <br />
+            First Name:
+            <br />
+            <input type="text" id="firstName" />
+            <br />
+            Last Name:
+            <br />
+            <input type="text" id="lastName" />
+            <br />
+            Street:
+            <br />
+            <input type="text" id="street" />
+            <br />
+            PostalCode:
+            <br />
+            <input type="text" id="postalCode" />
+            <br />
+            City:
+            <br />
+            <input type="text" id="city" />
+            <br />
+            <br />
+            <button type="button" onclick="onboardParcel()">Send a new parcel!</button>
+            <button type="button" onclick="loadSampleParcelData()">Prefill sample data :)</button>
+            <button type="button" onclick="generateSampleWarehouseTree()">Generate sample warehouse :)</button>
+        </div>
+        <div class="clear"></div>
+        <div id="resultContainer">
+
+        </div>
+        <div id="debug"></div>
+    </div>
+</body>
+</html> 
